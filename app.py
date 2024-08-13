@@ -102,5 +102,6 @@ def chat_route():
 
     return jsonify({'response': response_content})
 
-
+if __name__ == '__main__':
+    app.run()
 
