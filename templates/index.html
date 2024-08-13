@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--    <title>YouTube Clone with Gemini Chatbot</title>-->
+<!--    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">-->
+    <link rel="stylesheet" href="static/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>YouTube Clone</h1>
+        <form method="get" action="/">
+            <input type="text" name="query" placeholder="Search..." value="{{ request.args.get('query', '') }}">
+            <button type="submit">Search</button>
+        </form>
+    </header>
+    <div class="videos">
+        {% for video in videos %}
+            <div class="video">
+                <a href="{{ url_for('video', video_id=video['id']['videoId']) }}">
+                    <img src="{{ video['snippet']['thumbnails']['medium']['url'] }}" alt="{{ video['snippet']['title'] }}">
+                </a>
+                <h3>{{ video['snippet']['title'] }}</h3>
+                <p>{{ video['snippet']['description'] }}</p>
+            </div>
+        {% endfor %}
+    </div>
+
+<!--    <h1>Welcome to the Webpage with Gemini Chatbot</h1>-->
+<!--    <div id="chatbot-container">-->
+<!--        <div id="chatbot-header">Chat with Gemini</div>-->
+<!--        <div id="chatbot-body">-->
+<!--            <div id="chatbot-messages"></div>-->
+<!--&lt;!&ndash;            <div id="pdf-upload-container">&ndash;&gt;-->
+<!--&lt;!&ndash;                <input type="file" id="pdf-file-input" accept=".pdf" style="display: none;">&ndash;&gt;-->
+<!--&lt;!&ndash;                <button id="pdf-upload-btn">Upload PDF</button>&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--            <div id="chatbot-input-container">-->
+<!--                <input type="text" id="chatbot-input" placeholder="Type your message here">-->
+<!--                <button id="chatbot-send-btn">Send</button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="static/scripts.js"></script>
+</body>
+</html>
