@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Video</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>YouTube Clone</h1>
+        <a href="{{ url_for('index') }}">Back to Home</a>
+    </header>
+    <div class="video-player">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ video_id }}" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <div id="chatbot-container">
+        <div id="chatbot-header">Chat with Gemini</div>
+        <div id="chatbot-body">
+            <div id="chatbot-messages"></div>
+            <div id="pdf-upload-container">
+                <input type="file" id="pdf-file-input" accept=".pdf" style="display: none;">
+                <button id="pdf-upload-btn">Upload PDF</button>
+            </div>
+            <div id="chatbot-input-container">
+                <input type="text" id="chatbot-input" placeholder="Type your message here">
+                <button id="chatbot-send-btn">Send</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>
