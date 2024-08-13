@@ -1,6 +1,7 @@
-from flask import Flask, request, jsonify, render_template
-from dotenv import load_dotenv
+from flask import Flask, render_template, request, jsonify
+import requests
 import os
+from dotenv import load_dotenv
 import google.generativeai as genai
 import logging
 from PyPDF2 import PdfReader
@@ -9,7 +10,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGener
 from langchain.vectorstores import FAISS
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
-
+from pdf_maker import YouTubeVideoSummarizer
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -17,6 +18,10 @@ logging.basicConfig(level=logging.DEBUG)
 load_dotenv()
 
 app = Flask(__name__)
+app.config.from_object('config.Config')
+
+YOUTUBE_API_KEY = app.config['YOUTUBE_API_KEY']
+YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3/search'
 
 # Configure the Generative AI model
 try:
@@ -69,7 +74,36 @@ def user_input(user_question):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    query = request.args.get('query', 'Flask tutorial')
+    params = {
+        'part': 'snippet',
+        'q': query,
+        'type': 'video',
+        'key': YOUTUBE_API_KEY,
+        'maxResults':100
+    }
+    response = requests.get(YOUTUBE_API_URL, params=params)
+    videos = response.json().get('items', [])
+    return render_template('index.html', videos=videos)
+
+@app.route('/video/<video_id>')
+# def video(video_id):
+#     return render_template('video.html', video_id=video_id)
+def video(video_id):
+    try:
+        video_url = f"https://www.youtube.com/watch?v={video_id}"
+        print(video_url)
+        summarizer = YouTubeVideoSummarizer()
+        # video_link = "https://www.youtube.com/watch?v=1qS9O-lAtJE"
+        summarizer.summarize_video(video_url)
+
+        # Open the file in write mode to overwrite the content
+        # with open('video_links.txt', 'w') as f:
+        #     f.write(video_url + '\n')
+        return render_template('video.html', video_id=video_id)
+    except Exception as e:
+        logging.error(f"Error saving video link: {e}")
+        return "Error saving video link", 500
 
 @app.route('/upload', methods=['POST'])
 def upload_pdf():
@@ -103,5 +137,4 @@ def chat_route():
     return jsonify({'response': response_content})
 
 if __name__ == '__main__':
-    app.run()
-
+    app.run(debug=True)
